@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Sensor-Driven Adaptive Sanitation Protocol is an IoT-based hygiene monitoring system built on the NodeMCU ESP32-S platform. It uses gas, IR, and moisture sensors to detect sanitation issues in public restrooms in real time. The system automates exhaust fan control, provides staff alerts through a buzzer and LCD display, and includes keypad-based authentication for cleaning staff acknowledgment. All sensor data is processed locally and can be transmitted to a cloud dashboard for centralized monitoring.
+The Sensor-Driven Adaptive Sanitation Protocol is an IoT-based hygiene monitoring system built on the NodeMCU ESP32-S platform. It uses gas and IR sensors to detect sanitation issues in public restrooms in real time. The system automates exhaust fan control, provides staff alerts through a buzzer and LCD display, and includes keypad-based authentication for cleaning staff acknowledgment. All sensor data is processed locally and can be transmitted to a cloud dashboard for centralized monitoring.
 
 The system ensures continuous environmental monitoring of air quality, floor conditions, and occupancy while enforcing staff accountability through secure PIN verification. This provides a reliable, automated solution for maintaining hygiene standards in high-traffic public facilities.
 
@@ -14,13 +14,17 @@ The Sensor-Driven Adaptive Sanitation Protocol directly addresses these gaps by 
 
 ## Project Abstract
 
-The Sensor Driven Adaptive Sanitation Protocol (SDASP) is an intelligent IoT-based monitoring system designed to address the persistent problem of poor hygiene maintenance in public restrooms. The system employs a network of environmental and occupancy sensors to continuously monitor cleanliness levels and detect hygiene violations in real time. The central component is the NodeMCU ESP32-S microcontroller, which processes data from gas sensors (MQ-136 and MQ-137), a moisture sensor, and an IR sensor. Sensor readings are compared against calibrated thresholds, triggering alerts through a buzzer, LCD display, and relay-controlled exhaust fan. A keypad-based staff verification module ensures adherence to cleaning schedules, while data is transmitted to a cloud dashboard for real-time monitoring.
+The Sensor Driven Adaptive Sanitation Protocol (SDASP) is an intelligent IoT-based monitoring system designed to address the persistent problem of poor hygiene maintenance in public restrooms. The system employs a network of environmental and occupancy sensors to continuously monitor cleanliness levels and detect hygiene violations in real time. The central component is the NodeMCU ESP32-S microcontroller, which processes data from gas sensors (MQ-136 and MQ-137), and an IR sensor. Sensor readings are compared against calibrated thresholds, triggering alerts through a buzzer, LCD display, and relay-controlled exhaust fan. A keypad-based staff verification module ensures adherence to cleaning schedules, while data is transmitted to a cloud dashboard for real-time monitoring.
+
+## Block Diagram
+
+![Smart Toilet Hygiene Monitoring System - Block Diagram](Updated block diagram.jpg)
 
 ## System Architecture
 
 The architecture is structured into three primary functional layers:
 
-- **Sensor Layer (Data Acquisition)**: Responsible for acquiring real-time environmental and operational data. It includes MQ-136 (Hydrogen Sulfide), MQ-137 (Ammonia), YL-69 moisture sensor (floor wetness), FC-51 IR sensor (occupancy detection), and a 4×3 matrix keypad for staff PIN input.
+- **Sensor Layer (Data Acquisition)**: Responsible for acquiring real-time environmental and operational data. It includes MQ-136 (Hydrogen Sulfide), MQ-137 (Ammonia), FC-51 IR sensor (occupancy detection), and a 4×3 matrix keypad for staff PIN input.
 
 - **Processing and Decision Layer**: Powered by the NodeMCU ESP32-S microcontroller. It reads analog and digital sensor inputs via its 12-bit ADC and GPIO pins, processes the data, compares values against predefined thresholds, and executes decision logic for alerts and control actions.
 
@@ -40,12 +44,11 @@ The system follows a clear sequential process:
 
 ## System Components
 
-The project integrates the following 10 core components:
+The project integrates the following core components:
 
 - **NodeMCU ESP32-S** — Main microcontroller (all phases)  
 - **MQ-136 Gas Sensor** — Hydrogen Sulfide (H₂S) detection (Phase 4)  
 - **MQ-137 Gas Sensor** — Ammonia (NH₃) detection (Phase 4)  
-- **Moisture Sensor (YL-69)** — Floor wetness detection (Phase 4)  
 - **DHT22 Sensor** — Temperature and humidity monitoring (Phase 4)  
 - **IR Sensor (FC-51)** — Occupancy detection (Phase 3)  
 - **16×2 LCD Display (I²C)** — System status and alerts (Phases 2–6)  
@@ -75,13 +78,12 @@ The system is implemented in seven progressive phases:
 | 2     | IR Sensor                  | FC-51 / TCRT5000                  | Phase 3    | 1   | ₹29       | ₹29        |
 | 3     | Gas Sensor H₂S             | MQ-136                            | Phase 4    | 1   | ₹1,322    | ₹1,322     |
 | 4     | Gas Sensor NH₃             | MQ-137                            | Phase 4    | 1   | ₹1,394    | ₹1,394     |
-| 5     | Moisture Sensor            | YL-69 / HL-69                     | Phase 4    | 1   | ₹33       | ₹33        |
-| 6     | 16×2 LCD Display           | JHD162A + I²C Backpack            | Phases 2–6 | 1   | ₹150      | ₹150       |
-| 7     | 4×3 Matrix Keypad          | Generic Membrane 4×3              | Phase 6    | 1   | ₹39       | ₹39        |
-| 8     | Relay Module               | SRD-05VDC-SL-C (1ch)              | Phase 5    | 1   | ₹39       | ₹39        |
-| 9     | Buzzer                     | Active Piezo Buzzer 5V            | Phase 5    | 1   | ₹30       | ₹30        |
-| 10    | DHT22 Sensor               | DHT22 / AM2302                    | Phase 4    | 1   | ₹112      | ₹112       |
-|       | **GRAND TOTAL**            |                                   |            |     |           | **₹3,603** |
+| 5     | 16×2 LCD Display           | JHD162A + I²C Backpack            | Phases 2–6 | 1   | ₹150      | ₹150       |
+| 6     | 4×3 Matrix Keypad          | Generic Membrane 4×3              | Phase 6    | 1   | ₹39       | ₹39        |
+| 7     | Relay Module               | SRD-05VDC-SL-C (1ch)              | Phase 5    | 1   | ₹39       | ₹39        |
+| 8     | Buzzer                     | Active Piezo Buzzer 5V            | Phase 5    | 1   | ₹30       | ₹30        |
+| 9     | DHT22 Sensor               | DHT22 / AM2302                    | Phase 4    | 1   | ₹112      | ₹112       |
+|       | **GRAND TOTAL**            |                                   |            |     |           | **₹3,570** |
 
 ## Team Roles
 
