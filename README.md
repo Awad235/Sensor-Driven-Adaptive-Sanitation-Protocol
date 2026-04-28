@@ -26,6 +26,12 @@ The Sensor Driven Adaptive Sanitation Protocol (SDASP) is an intelligent IoT-bas
 
 *Detailed pin mapping for all sensors, keypad, relay, buzzer, and LCD connections used in the project.*
 
+## Schematic Diagram
+
+![System Schematic](https://github.com/Awad235/Sensor-Driven-Adaptive-Sanitation-Protocol/blob/2962fe6ec6e72ff11bdea4b34cf7d5b25d21bf17/diagram/Schematic.jpg)
+
+*Complete hardware schematic showing power supply, ESP32 connections, sensor interfacing, and peripheral modules.*
+
 ## System Architecture
 
 The architecture is structured into three primary functional layers:
