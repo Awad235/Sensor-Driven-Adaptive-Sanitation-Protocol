@@ -18,7 +18,15 @@ The Sensor Driven Adaptive Sanitation Protocol (SDASP) is an intelligent IoT-bas
 
 ## Block Diagram
 
-![Smart Toilet Hygiene Monitoring System - Block Diagram](https://github.com/Awad235/Sensor-Driven-Adaptive-Sanitation-Protocol/blob/f14598cc4e6a635c8e38517261f7a55bc597abb1/diagram/SDASP%20block%20diagram.png)
+![Smart Toilet Hygiene Monitoring System - Block Diagram](https://github.com/Awad235/Sensor-Driven-Adaptive-Sanitation-Protocol/blob/main/diagram/SDASP%20block%20diagram.png)
+
+## ESP32 Pin Assignment
+
+![ESP32 Pin Assignment - Project Wiring Reference](https://github.com/Awad235/Sensor-Driven-Adaptive-Sanitation-Protocol/blob/main/diagram/Esp32%20Pin%20assignment.jpeg)
+
+*Detailed pin mapping for all sensors, keypad, relay, buzzer, and LCD connections used in the project.*
+
+*Complete hardware schematic showing power supply, ESP32 connections, sensor interfacing, and peripheral modules.*
 
 ## System Architecture
 
