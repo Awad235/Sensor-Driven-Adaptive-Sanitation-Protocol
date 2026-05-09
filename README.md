@@ -28,9 +28,29 @@ The Sensor Driven Adaptive Sanitation Protocol (SDASP) is an intelligent IoT-bas
 
 ## Schematic Diagram
 
-![System Schematic](https://github.com/Awad235/Sensor-Driven-Adaptive-Sanitation-Protocol/blob/2962fe6ec6e72ff11bdea4b34cf7d5b25d21bf17/diagram/Schematic.jpg)
+![System Schematic](https://github.com/Awad235/Sensor-Driven-Adaptive-Sanitation-Protocol/blob/main/diagram/Schematic.jpg)
 
 *Complete hardware schematic showing power supply, ESP32 connections, sensor interfacing, and peripheral modules.*
+
+## Web Dashboard
+
+The system includes a responsive web-based dashboard that enables real-time remote monitoring of the sanitation facility.
+
+![SDASP Web Dashboard](https://github.com/Awad235/Sensor-Driven-Adaptive-Sanitation-Protocol/blob/main/assets/Web%20dashboard%201.jpeg)
+
+**Key Features:**
+- Live monitoring of H₂S and NH₃ gas concentrations
+- Occupancy status and counting
+- Temperature & Humidity display
+- Exhaust fan control status
+- Overall system health
+- Smart Accountability and alert history log
+
+### Gas Sensor Response Test
+
+![Gas Sensor Alert Test](https://github.com/Awad235/Sensor-Driven-Adaptive-Sanitation-Protocol/blob/main/assets/Gas%20Sensor%20Response%20Test%20(Alert).jpeg)
+
+*Real-time demonstration showing both Hydrogen Sulfide (H₂S) and Ammonia (NH₃) sensors detecting elevated gas levels and successfully triggering alerts.*
 
 ## System Architecture
 
@@ -58,50 +78,50 @@ The system follows a clear sequential process:
 
 The project integrates the following core components:
 
-- **NodeMCU ESP32-S** — Main microcontroller (all phases)  
-- **Fermion MEMS Gas Detection Sensor (H₂S)** — Hydrogen Sulfide detection (Phase 4)  
-- **Fermion MEMS Gas Detection Sensor (NH₃)** — Ammonia detection (Phase 4)  
-- **DHT22 Sensor** — Temperature and humidity monitoring (Phase 4)  
-- **IR Sensor (FC-51)** — Occupancy detection (Phase 3)  
-- **16×2 LCD Display (I²C)** — System status and alerts (Phases 2–6)  
-- **4×3 Matrix Keypad** — Staff PIN verification (Phase 6)  
-- **Relay Module** — Exhaust fan and appliance control (Phase 5)  
-- **Buzzer** — Audible alerts (Phase 5)  
+- **NodeMCU ESP32-S** — Main microcontroller (all phases)
+- **Fermion MEMS Gas Detection Sensor (H₂S)** — Hydrogen Sulfide detection (Phase 4)
+- **Fermion MEMS Gas Detection Sensor (NH₃)** — Ammonia detection (Phase 4)
+- **DHT22 Sensor** — Temperature and humidity monitoring (Phase 4)
+- **IR Sensor (FC-51)** — Occupancy detection (Phase 3)
+- **16×2 LCD Display (I²C)** — System status and alerts (Phases 2–6)
+- **4×3 Matrix Keypad** — Staff PIN verification (Phase 6)
+- **Relay Module** — Exhaust fan and appliance control (Phase 5)
+- **Buzzer** — Audible alerts (Phase 5)
 
 ## Development Phases
 
 The system is implemented in seven progressive phases:
 
-| Phase | Description                          |
+| Phase | Description |
 |-------|--------------------------------------|
-| 1     | Environment Setup                    |
-| 2     | LCD Integration                      |
-| 3     | IR Occupancy Detection               |
-| 4     | Sensor Suite Integration             |
-| 5     | Alert & Control Mechanisms           |
-| 6     | PIN Keypad Authentication            |
-| 7     | Cloud/Dashboard Integration          |
+| 1     | Environment Setup |
+| 2     | LCD Integration |
+| 3     | IR Occupancy Detection |
+| 4     | Sensor Suite Integration |
+| 5     | Alert & Control Mechanisms |
+| 6     | PIN Keypad Authentication |
+| 7     | Cloud/Dashboard Integration |
 
 ## Bill of Materials
 
-| S. No | Component                          | Part No. / Model                          | Phase      | Qty | Unit Cost | Total Cost |
+| S. No | Component | Part No. / Model | Phase | Qty | Unit Cost | Total Cost |
 |-------|------------------------------------|-------------------------------------------|------------|-----|-----------|------------|
-| 1     | NodeMCU ESP32-S                    | NodeMCU ESP32-S (38-pin)                  | All        | 1   | ₹455      | ₹455       |
-| 2     | IR Sensor                          | FC-51 / TCRT5000                          | Phase 3    | 1   | ₹29       | ₹29        |
-| 3     | Gas Sensor H₂S                     | Fermion MEMS Gas Detection Sensor (H₂S)   | Phase 4    | 1   | ₹988      | ₹988       |
-| 4     | Gas Sensor NH₃                     | Fermion MEMS Gas Detection Sensor (NH₃)   | Phase 4    | 1   | ₹875      | ₹875       |
-| 5     | 16×2 LCD Display                   | JHD162A + I²C Backpack                    | Phases 2–6 | 1   | ₹150      | ₹150       |
-| 6     | 4×3 Matrix Keypad                  | Generic Membrane 4×3                      | Phase 6    | 1   | ₹39       | ₹39        |
-| 7     | Relay Module                       | SRD-05VDC-SL-C (1ch)                      | Phase 5    | 1   | ₹39       | ₹39        |
-| 8     | Buzzer                             | Active Piezo Buzzer 5V                    | Phase 5    | 1   | ₹30       | ₹30        |
-| 9     | DHT22 Sensor                       | DHT22 / AM2302                            | Phase 4    | 1   | ₹112      | ₹112       |
-|       | **GRAND TOTAL**                    |                                           |            |     |           | **₹2,717** |
+| 1 | NodeMCU ESP32-S | NodeMCU ESP32-S (38-pin) | All | 1 | ₹455 | ₹455 |
+| 2 | IR Sensor | FC-51 / TCRT5000 | Phase 3 | 1 | ₹29 | ₹29 |
+| 3 | Gas Sensor H₂S | Fermion MEMS Gas Detection Sensor (H₂S) | Phase 4 | 1 | ₹988 | ₹988 |
+| 4 | Gas Sensor NH₃ | Fermion MEMS Gas Detection Sensor (NH₃) | Phase 4 | 1 | ₹875 | ₹875 |
+| 5 | 16×2 LCD Display | JHD162A + I²C Backpack | Phases 2–6 | 1 | ₹150 | ₹150 |
+| 6 | 4×3 Matrix Keypad | Generic Membrane 4×3 | Phase 6 | 1 | ₹39 | ₹39 |
+| 7 | Relay Module | SRD-05VDC-SL-C (1ch) | Phase 5 | 1 | ₹39 | ₹39 |
+| 8 | Buzzer | Active Piezo Buzzer 5V | Phase 5 | 1 | ₹30 | ₹30 |
+| 9 | DHT22 Sensor | DHT22 / AM2302 | Phase 4 | 1 | ₹112 | ₹112 |
+| | **GRAND TOTAL** | | | | | **₹2,717** |
 
 ## Team Roles
 
-| Role                                | Team Members                                      |
+| Role | Team Members |
 |-------------------------------------|---------------------------------------------------|
-| Documentation                       | Sushankitha, Sanjana, Neha                         |
-| Software Development                | Tejashwini, Keerthana                             |
-| Hardware Implementation & Testing   | Raphael, Maaz, Awad, Murgesh, Manoj, Anush        |
-| Hardware & Circuit Design           | Shrinath, Vidya Sagar, Anush                      |
+| Documentation | Sushakitha, Sanjana, Neha |
+| Software Development | Tejashwini, Keerthana |
+| Hardware Implementation & Testing | Raphael, Maaz, Awad, Murgesh, Manoj, Anush |
+| Hardware & Circuit Design | Shrinath, Vidya Sagar, Anush |
