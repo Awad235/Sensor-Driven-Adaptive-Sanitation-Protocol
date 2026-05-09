@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDASP Dashboard</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#0f172a;color:white;}
+
+#splash{height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;gap:12px;}
+#splash h1{color:#22c55e;font-size:28px;text-align:center;}
+#splash p{color:#94a3b8;}
+
+#loginPage{display:none;height:100vh;justify-content:center;align-items:center;}
+.login-box{width:350px;background:#1e293b;padding:35px;border-radius:16px;text-align:center;}
+.login-box h2{margin-bottom:16px;}
+input{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:none;color:#000;font-size:15px;}
+button{width:100%;padding:12px;background:#22c55e;color:white;border:none;border-radius:8px;cursor:pointer;font-size:15px;}
+button:hover{background:#16a34a;}
+
+#dashboard{display:none;}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 40px;background:#1e293b;border-bottom:1px solid #334155;}
+header h3{font-size:18px;color:#22c55e;}
+header button{width:auto;padding:8px 18px;font-size:13px;}
+
+/* Live clock in header */
+#liveClock{
+  font-size:13px;
+  color:#38bdf8;
+  font-variant-numeric:tabular-nums;
+  background:#0f172a;
+  padding:4px 12px;
+  border-radius:8px;
+  border:1px solid #334155;
+  letter-spacing:0.03em;
+}
+#liveClock.no-sync{color:#94a3b8;}
+
+.hero{text-align:center;padding:28px 20px 16px;}
+.hero h1{font-size:32px;background:linear-gradient(90deg,#22c55e,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero p{color:#94a3b8;margin-top:6px;}
+
+.badges{display:flex;justify-content:center;gap:10px;margin-top:10px;flex-wrap:wrap;}
+.badge{font-size:12px;padding:4px 12px;border-radius:20px;background:#1e293b;color:#38bdf8;border:1px solid #334155;}
+.badge.alarm{background:#450a0a;color:#ef4444;border-color:#7f1d1d;}
+.badge.warn{background:#422006;color:#fb923c;border-color:#7c2d12;}
+
+.container{padding:16px 40px 40px;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+
+.card{background:#1e293b;padding:20px;border-radius:16px;border:1px solid #334155;transition:border-color 0.3s;}
+.card.alert-card{border-color:#ef4444;}
+.card.warn-card{border-color:#fb923c;}
+.title{color:#94a3b8;font-size:13px;display:flex;align-items:center;gap:6px;}
+.value{font-size:26px;margin-top:8px;font-weight:600;}
+.sub{font-size:12px;margin-top:5px;color:#94a3b8;}
+
+.green{color:#22c55e;}
+.yellow{color:#facc15;}
+.orange{color:#fb923c;}
+.red{color:#ef4444;}
+
+.bar{height:6px;background:#334155;border-radius:8px;margin-top:10px;overflow:hidden;}
+.fill{height:6px;border-radius:8px;transition:width 0.4s,background 0.4s;}
+
+.temp-strip{display:flex;gap:12px;margin-top:6px;}
+.temp-item{font-size:12px;color:#94a3b8;}
+.temp-item span{color:white;font-weight:500;}
+
+.cooldown-bar{height:4px;background:#334155;border-radius:4px;margin-top:8px;}
+.cooldown-fill{height:4px;border-radius:4px;background:#38bdf8;transition:width 1s linear;}
+
+/* Cal info strip */
+.cal-strip{
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;
+  font-size:11px;color:#64748b;
+}
+.cal-strip span{
+  background:#0f172a;border:1px solid #1e293b;border-radius:6px;
+  padding:2px 8px;font-variant-numeric:tabular-nums;
+}
+.cal-strip span b{color:#38bdf8;}
+
+.account{margin-top:20px;background:#1e293b;padding:20px;border-radius:14px;border:1px solid #334155;}
+.account h3{margin-bottom:12px;font-size:15px;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+.btn-row button{width:auto;padding:8px 16px;font-size:13px;background:#0f172a;border:1px solid #334155;border-radius:8px;}
+.btn-row button:hover{background:#1e293b;}
+
+#log{font-size:13px;color:#94a3b8;line-height:2;max-height:150px;overflow-y:auto;}
+#log .log-entry{padding:2px 0;border-bottom:1px solid #1e293b;}
+/* Timestamp pill inside log entries */
+.log-entry .ts{
+  display:inline-block;
+  font-size:11px;
+  color:#38bdf8;
+  background:#0f172a;
+  border:1px solid #334155;
+  border-radius:6px;
+  padding:0 6px;
+  margin-left:6px;
+  font-variant-numeric:tabular-nums;
+}
+
+.last-update{text-align:center;font-size:11px;color:#475569;margin-top:6px;}
+
+.offline-banner{display:none;background:#450a0a;color:#ef4444;text-align:center;padding:8px;font-size:13px;}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <h1>Launching Smart Sanitation Intelligence...</h1>
+  <p>Analyzing Real-Time Hygiene Data</p>
+</div>
+
+<div id="loginPage">
+  <div class="login-box">
+    <h2>SDASP Login</h2>
+    <input id="username" placeholder="Username" autocomplete="off">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()" style="margin-top:8px;">Login</button>
+    <p id="msg" style="color:#ef4444;margin-top:10px;font-size:13px;"></p>
+  </div>
+</div>
+
+<div id="dashboard">
+
+  <div class="offline-banner" id="offlineBanner">ESP32 offline — retrying...</div>
+
+  <header>
+    <h3>SDASP</h3>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <span id="liveClock" class="no-sync">Syncing time...</span>
+      <span id="loggedUser" style="color:#94a3b8;font-size:13px;"></span>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <svg width="80" height="80" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#1e293b"/>
+      <path d="M35 40 h30 v20 a15 15 0 0 1 -30 0 z" fill="#22c55e"/>
+      <circle cx="50" cy="65" r="5" fill="#0f172a"/>
+    </svg>
+    <h1>SDASP Hygiene Monitoring</h1>
+    <p>Sensor-Driven Adaptive Sanitation Protocol</p>
+    <div class="badges">
+      <span class="badge" id="connBadge">Connecting to ESP32...</span>
+      <span class="badge" id="alarmBadge" style="display:none;"></span>
+      <span class="badge" id="coolBadge" style="display:none;"></span>
+    </div>
+    <div class="last-update" id="lastUpdate">—</div>
+  </div>
+
+  <div class="container">
+    <div class="grid">
+
+      <!-- OCCUPANCY -->
+      <div class="card" id="occCard">
+        <div class="title">Occupancy</div>
+        <div id="occupancy" class="value green">FREE</div>
+        <div id="users" class="sub">Count: 0 / 20</div>
+        <div class="bar"><div id="occBar" class="fill" style="width:0%;background:#22c55e;"></div></div>
+      </div>
+
+      <!-- NH3 -->
+      <div class="card" id="nh3Card">
+        <div class="title">NH3 — Ammonia</div>
+        <div id="nh3Text" class="value green">0%</div>
+        <div id="nh3ppm" class="sub">0.00 ppm of 5.0 ppm</div>
+        <div class="bar"><div id="nh3Bar" class="fill" style="width:0%;background:#22c55e;"></div></div>
+        <div class="cal-strip">
+          <span>Base <b id="nh3Base">—</b></span>
+          <span>Trig <b id="nh3Trig">—</b></span>
+        </div>
+      </div>
+
+      <!-- H2S -->
+      <div class="card" id="h2sCard">
+        <div class="title">H2S — Hydrogen Sulphide</div>
+        <div id="h2sText" class="value green">0%</div>
+        <div id="h2sppm" class="sub">0.00 ppm of 3.0 ppm</div>
+        <div class="bar"><div id="h2sBar" class="fill" style="width:0%;background:#22c55e;"></div></div>
+        <div class="cal-strip">
+          <span>Base <b id="h2sBase">—</b></span>
+          <span>Trig <b id="h2sTrig">—</b></span>
+        </div>
+      </div>
+
+      <!-- HUMIDITY -->
+      <div class="card" id="humCard">
+        <div class="title">Humidity + Temperature</div>
+        <div id="moistText" class="value green">0%</div>
+        <div class="temp-strip">
+          <div class="temp-item">Threshold: <span>70%</span></div>
+          <div class="temp-item">Temp: <span id="tempVal">—°C</span></div>
+        </div>
+        <div class="bar"><div id="moistBar" class="fill" style="width:0%;background:#22c55e;"></div></div>
+      </div>
+
+      <!-- FAN -->
+      <div class="card" id="fanCard">
+        <div class="title">Exhaust Fan</div>
+        <div id="fan" class="value red">OFF</div>
+        <div id="fanSub" class="sub">Relay controlled</div>
+        <div class="cooldown-bar"><div id="coolBar" class="cooldown-fill" style="width:0%;"></div></div>
+      </div>
+
+      <!-- STATUS -->
+      <div class="card" id="statusCard">
+        <div class="title">System Status</div>
+        <div id="status" class="value green">NORMAL</div>
+        <div id="statusSub" class="sub">All sensors OK</div>
+      </div>
+
+    </div>
+
+    <!-- ACCOUNTABILITY -->
+    <div class="account">
+      <h3>Smart Accountability</h3>
+      <div class="btn-row">
+        <button id="staffBtn" onclick="markCleaned()" style="display:none;">Mark Cleaning Done</button>
+        <button id="adminBtn" onclick="exportLogs()" style="display:none;">Export Records</button>
+        <button onclick="clearLogs()" style="display:none;" id="clearBtn">Clear Logs</button>
+      </div>
+      <div id="log">No records yet</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const users = {
+  admin: { password:"1234", role:"admin" },
+  staff: { password:"0000", role:"staff" }
+};
+
+setTimeout(() => {
+  document.getElementById("splash").style.display = "none";
+  document.getElementById("loginPage").style.display = "flex";
+}, 1500);
+
+function login() {
+  let u = document.getElementById("username").value.trim();
+  let p = document.getElementById("password").value;
+  if (users[u] && users[u].password === p) {
+    localStorage.setItem("user", u);
+    localStorage.setItem("role", users[u].role);
+    document.getElementById("loginPage").style.display = "none";
+    showDashboard();
+  } else {
+    document.getElementById("msg").innerText = "Invalid username or password";
+  }
+}
+
+function showDashboard() {
+  document.getElementById("dashboard").style.display = "block";
+  document.getElementById("loggedUser").innerText =
+    localStorage.user + " (" + localStorage.role + ")";
+  if (localStorage.role === "staff") {
+    document.getElementById("staffBtn").style.display = "inline-block";
+  } else {
+    document.getElementById("adminBtn").style.display = "inline-block";
+    document.getElementById("clearBtn").style.display = "inline-block";
+  }
+  displayLogs();
+  startPolling();
+}
+
+function logout() { localStorage.clear(); location.reload(); }
+
+function markCleaned() {
+  let logs = JSON.parse(localStorage.logs || "[]");
+  let ts = document.getElementById("liveClock").innerText.replace("🕐 IST ", "");
+  logs.push({ type:"clean", user: localStorage.user, time: ts });
+  localStorage.logs = JSON.stringify(logs);
+  displayLogs();
+}
+
+function clearLogs() {
+  if (!confirm("Clear all logs?")) return;
+  localStorage.removeItem("logs");
+  displayLogs();
+}
+
+function exportLogs() {
+  let logs = JSON.parse(localStorage.logs || "[]");
+  if (!logs.length) { alert("No records to export"); return; }
+  let text = "SDASP Accountability Log\n" + "=".repeat(40) + "\n";
+  logs.forEach(l => {
+    if (l.type === "clean") {
+      text += "[CLEAN]   " + l.user + " at " + l.time + "\n";
+    } else {
+      text += "[ACK]     Code " + (l.code||"?") + " | " + (l.reason||"alarm") + " | " + l.time + "\n";
+    }
+  });
+  let blob = new Blob([text], { type:"text/plain" });
+  let a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "sdasp_log_" + new Date().toISOString().slice(0,10) + ".txt";
+  a.click();
+}
+
+function displayLogs() {
+  let logs = JSON.parse(localStorage.logs || "[]").slice(-10).reverse();
+  let el = document.getElementById("log");
+  if (!logs.length) { el.innerHTML = "No records yet"; return; }
+  el.innerHTML = logs.map(l => {
+    let tsPill = l.time ? '<span class="ts">🕐 ' + l.time + '</span>' : '';
+    if (l.type === "clean") {
+      return '<div class="log-entry">🧹 <b>' + l.user + '</b> marked clean' + tsPill + '</div>';
+    } else {
+      return '<div class="log-entry">🔑 Code <b>' + (l.code||"?") +
+             '</b> resolved <i>' + (l.reason||"alarm") + '</i>' + tsPill + '</div>';
+    }
+  }).join("");
+}
+
+function barColor(pct) {
+  if (pct > 75) return "#ef4444";
+  if (pct > 40) return "#facc15";
+  return "#22c55e";
+}
+
+function textClass(pct) {
+  if (pct > 75) return "value red";
+  if (pct > 40) return "value yellow";
+  return "value green";
+}
+
+function setCardState(id, state) {
+  let c = document.getElementById(id);
+  c.classList.remove("alert-card","warn-card");
+  if (state === "alert") c.classList.add("alert-card");
+  if (state === "warn")  c.classList.add("warn-card");
+}
+
+function updateClock(timeStr) {
+  let el = document.getElementById("liveClock");
+  if (!timeStr || timeStr.startsWith("up ")) {
+    el.innerText = timeStr || "No sync";
+    el.classList.add("no-sync");
+  } else {
+    el.innerText = "🕐 IST " + timeStr;
+    el.classList.remove("no-sync");
+  }
+}
+
+function startPolling() {
+  let lastAckSeen     = "";
+  let lastAlarmReason = "";
+
+  function poll() {
+    fetch("/data")
+      .then(r => r.json())
+      .then(d => {
+
+        if (d.reason) lastAlarmReason = d.reason;
+
+        // ── Clock ──
+        if (d.currentTime) updateClock(d.currentTime);
+
+        document.getElementById("offlineBanner").style.display = "none";
+        document.getElementById("connBadge").innerText = "ESP32 connected";
+        document.getElementById("lastUpdate").innerText =
+          "Last update: " + new Date().toLocaleTimeString();
+
+        // ── Alarm badge ──
+        let ab = document.getElementById("alarmBadge");
+        if (d.alarm) {
+          ab.style.display = "inline-block";
+          ab.className = "badge alarm";
+          ab.innerText = "ALARM: " + d.reason;
+        } else {
+          ab.style.display = "none";
+        }
+
+        // ── Cooldown badge + bar ──
+        let cb = document.getElementById("coolBadge");
+        let coolBar = document.getElementById("coolBar");
+        if (d.cooldown) {
+          cb.style.display = "inline-block";
+          cb.className = "badge warn";
+          cb.innerText = "Cooldown: " + d.cooldownLeft + "s";
+          coolBar.style.width = Math.min((d.cooldownLeft / 300) * 100, 100) + "%";
+        } else {
+          cb.style.display = "none";
+          coolBar.style.width = "0%";
+        }
+
+        // ── Occupancy ──
+        let occPct = Math.min((d.occupancy / 20) * 100, 100);
+        let occEl = document.getElementById("occupancy");
+        occEl.innerText = d.occupancy > 0 ? "OCCUPIED" : "FREE";
+        occEl.className = "value " + (d.occupancy >= 20 ? "red" : d.occupancy > 0 ? "yellow" : "green");
+        document.getElementById("users").innerText = "Count: " + d.occupancy + " / 20";
+        document.getElementById("occBar").style.width = occPct + "%";
+        document.getElementById("occBar").style.background = barColor(occPct);
+        setCardState("occCard", d.occupancy >= 20 ? "alert" : d.occupancy > 15 ? "warn" : "");
+
+        // ── NH3 ──
+        let nh3p = d.ammoniaPct;
+        document.getElementById("nh3Text").innerText = nh3p + "%";
+        document.getElementById("nh3Text").className = textClass(nh3p);
+        document.getElementById("nh3ppm").innerText = d.ammonia.toFixed(2) + " ppm of 5.0 ppm";
+        document.getElementById("nh3Bar").style.width = Math.min(nh3p,100) + "%";
+        document.getElementById("nh3Bar").style.background = barColor(nh3p);
+        document.getElementById("nh3Base").innerText = "0 ppm";
+        document.getElementById("nh3Trig").innerText = d.trig_nh3.toFixed(1) + " ppm";
+        setCardState("nh3Card", nh3p >= 100 ? "alert" : nh3p >= 75 ? "warn" : "");
+
+        // ── H2S ──
+        let h2sp = d.h2sPct;
+        document.getElementById("h2sText").innerText = h2sp + "%";
+        document.getElementById("h2sText").className = textClass(h2sp);
+        document.getElementById("h2sppm").innerText = d.h2s.toFixed(2) + " ppm of 3.0 ppm";
+        document.getElementById("h2sBar").style.width = Math.min(h2sp,100) + "%";
+        document.getElementById("h2sBar").style.background = barColor(h2sp);
+        document.getElementById("h2sBase").innerText = "0 ppm";
+        document.getElementById("h2sTrig").innerText = d.trig_h2s.toFixed(1) + " ppm";
+        setCardState("h2sCard", h2sp >= 100 ? "alert" : h2sp >= 75 ? "warn" : "");
+
+        // ── Humidity ──
+        let hum = d.humidity;
+        document.getElementById("moistText").innerText = hum + "%";
+        document.getElementById("moistText").className = "value " + (hum > 70 ? "red" : hum > 65 ? "yellow" : "green");
+        document.getElementById("tempVal").innerText = d.temp + "°C";
+        document.getElementById("moistBar").style.width = Math.min(hum,100) + "%";
+        document.getElementById("moistBar").style.background = barColor(hum > 70 ? 80 : hum > 65 ? 50 : 20);
+        setCardState("humCard", hum > 70 ? "alert" : hum > 65 ? "warn" : "");
+
+        // ── Fan ──
+        document.getElementById("fan").innerText = d.fan ? "ON" : "OFF";
+        document.getElementById("fan").className = "value " + (d.fan ? "green" : "red");
+        document.getElementById("fanSub").innerText = d.fan ? "Running — alarm active" : "Standby";
+
+        // ── Status ──
+        let worst = Math.max(nh3p, h2sp, hum > 70 ? 100 : 0, d.occupancy >= 20 ? 100 : 0);
+        let statusEl  = document.getElementById("status");
+        let statusSub = document.getElementById("statusSub");
+        if (d.alarm) {
+          statusEl.innerText = "ALARM";
+          statusEl.className = "value red";
+          statusSub.innerText = "⚠ " + (d.reason || "Check sensors");
+          setCardState("statusCard", "alert");
+        } else if (worst > 75) {
+          statusEl.innerText = "WARNING";
+          statusEl.className = "value yellow";
+          statusSub.innerText = "Levels approaching threshold";
+          setCardState("statusCard", "warn");
+        } else {
+          statusEl.innerText = "NORMAL";
+          statusEl.className = "value green";
+          statusSub.innerText = "All sensors OK";
+          setCardState("statusCard", "");
+        }
+
+        // ── Auto-log alarm acknowledgements with IST timestamp ──
+        if (d.lastCode && d.lastAck) {
+          let token = d.lastCode + "@" + d.lastAck;
+          if (token !== lastAckSeen) {
+            lastAckSeen = token;
+            let logs = JSON.parse(localStorage.logs || "[]");
+            logs.push({
+              type:   "ack",
+              code:   d.lastCode,
+              time:   d.lastAck,
+              reason: lastAlarmReason || "Alarm"
+            });
+            localStorage.logs = JSON.stringify(logs);
+            displayLogs();
+          }
+        }
+
+      })
+      .catch(() => {
+        document.getElementById("offlineBanner").style.display = "block";
+        document.getElementById("connBadge").innerText = "ESP32 offline";
+        document.getElementById("lastUpdate").innerText = "Connection lost";
+      });
+  }
+
+  poll();
+  setInterval(poll, 2000);
+}
+</script>
+</body>
+</html>
