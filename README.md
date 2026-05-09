@@ -101,7 +101,7 @@ The system is implemented in seven progressive phases:
 
 | Role                                | Team Members                                      |
 |-------------------------------------|---------------------------------------------------|
-| Documentation                       | Sushakitha, Sanjana, Neha                         |
+| Documentation                       | Sushankitha, Sanjana, Neha                         |
 | Software Development                | Tejashwini, Keerthana                             |
 | Hardware Implementation & Testing   | Raphael, Maaz, Awad, Murgesh, Manoj, Anush        |
 | Hardware & Circuit Design           | Shrinath, Vidya Sagar, Anush                      |
